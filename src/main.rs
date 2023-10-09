@@ -1,147 +1,61 @@
-use std::process::Command;
+use pipewire::{Context, MainLoop, spa::ReadableDict};
 
-use serde::Deserialize;
+//                if object.type_ != "PipeWire:Interface:Metadata" {
+//                    .metadata_name .as_ref() .unwrap() != "default"
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Deserialize)]
-struct Object {
-    id: ObjectId,
-    #[serde(rename = "type")]
-    type_: String,
-    info: Option<ObjectInfo>,
-    metadata: Option<Vec<Metadata>>,
-    props: Option<ObjectProps>,
-}
+//                if metadata.key != "default.configured.audio.sink" {
+//                let MetadataValue::ObjectName { name } = &metadata.value else {
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Deserialize)]
-struct ObjectProps {
-    #[serde(rename = "metadata.name")]
-    metadata_name: Option<String>,
-}
+// fn next_audio_sink_id(&self) -> Option<ObjectId> {
+//     self.0.iter().cycle().find_map(|object| {
+//         if object.type_ != "PipeWire:Interface:Node" {
+//             return None;
+//         }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Deserialize)]
-struct Metadata {
-    key: String,
-    value: MetadataValue,
-}
+//         let info = object.info.as_ref().unwrap();
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Deserialize)]
-#[serde(untagged)]
-enum MetadataValue {
-    Integer(usize),
-    String(String),
-    ObjectName { name: NodeName },
-    Other {},
-}
+//         let Some(media_class) = info.props.media_class.as_ref() else {
+//             return None;
+//         };
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Deserialize)]
-struct ObjectId(usize);
+//         if media_class != "Audio/Sink" {
+//             return None;
+//         }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Deserialize)]
-struct ObjectInfo {
-    props: InfoProps,
-}
+//         let node_name = info.props.node_name.as_ref().unwrap();
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Deserialize)]
-struct InfoProps {
-    #[serde(rename = "media.class")]
-    media_class: Option<String>,
-    #[serde(rename = "metadata.name")]
-    metadata_name: Option<String>,
-    #[serde(rename = "node.name")]
-    node_name: Option<NodeName>,
-}
+//         if node_name == self.default_audio_sink_name() {
+//             return None;
+//         }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Deserialize)]
-struct NodeName(String);
+//         Some(object.id)
+//     })
+// }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Deserialize)]
-struct Dump(Vec<Object>);
-
-impl Dump {
-    fn get() -> Self {
-        let objects = Command::new("pw-dump").output().unwrap().stdout;
-        let objects: Vec<Object> = serde_json::from_slice(&objects).unwrap();
-        Self(objects)
-    }
-
-    fn defaults(&self) -> &Vec<Metadata> {
-        let defaults = self
-            .0
-            .iter()
-            .find_map(|object| {
-                if object.type_ != "PipeWire:Interface:Metadata" {
-                    return None;
-                }
-
-                if object
-                    .props
-                    .as_ref()
-                    .unwrap()
-                    .metadata_name
-                    .as_ref()
-                    .unwrap()
-                    != "default"
-                {
-                    return None;
-                }
-
-                Some(object.metadata.as_ref().unwrap())
-            })
-            .unwrap();
-        defaults
-    }
-
-    fn default_audio_sink_name(&self) -> &NodeName {
-        let defaults = self.defaults();
-
-        defaults
-            .iter()
-            .find_map(|metadata| {
-                if metadata.key != "default.configured.audio.sink" {
-                    return None;
-                }
-
-                let MetadataValue::ObjectName { name } = &metadata.value else {
-                    return None;
-                };
-
-                Some(name)
-            })
-            .unwrap()
-    }
-
-    fn next_audio_sink_id(&self) -> Option<ObjectId> {
-        self.0.iter().cycle().find_map(|object| {
-            if object.type_ != "PipeWire:Interface:Node" {
-                return None;
-            }
-
-            let info = object.info.as_ref().unwrap();
-
-            let Some(media_class) = info.props.media_class.as_ref() else {
-                return None;
-            };
-
-            if media_class != "Audio/Sink" {
-                return None;
-            }
-
-            let node_name = info.props.node_name.as_ref().unwrap();
-
-            if node_name == self.default_audio_sink_name() {
-                return None;
-            }
-
-            Some(object.id)
-        })
-    }
-}
+//fn main() {
+//    let dump = Dump::get();
+//    let next_audio_sink_id = dump.next_audio_sink_id().unwrap();
+//    let command = &mut Command::new("wpctl");
+//    command.args(["set-default", &next_audio_sink_id.0.to_string()]);
+//    let status = command.status().unwrap();
+//    assert!(status.success());
+//}
 
 fn main() {
-    let dump = Dump::get();
-    let next_audio_sink_id = dump.next_audio_sink_id().unwrap();
-    let command = &mut Command::new("wpctl");
-    command.args(["set-default", &next_audio_sink_id.0.to_string()]);
-    let status = command.status().unwrap();
-    assert!(status.success());
+    let mainloop = MainLoop::new().unwrap();
+    let context = Context::new(&mainloop).unwrap();
+    let core = context.connect(None).unwrap();
+    let registry = core.get_registry().unwrap();
+
+    let something = registry
+        .add_listener_local()
+        .global(|global| {
+            dbg!(global);
+            for item in global.iter() {
+              dbg!(item);
+            }
+        })
+        .register();
+
+    mainloop.run();
 }
