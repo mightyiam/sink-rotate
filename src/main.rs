@@ -49,11 +49,11 @@ fn main() {
 
     let something = registry
         .add_listener_local()
-        .global(|global| {
-            dbg!(global);
-            for item in global.iter() {
-              dbg!(item);
-            }
+        .global(|global_object| {
+            dbg!(global_object);
+            // for item in global.props.iter() {
+            //   dbg!(item);
+            // }
         })
         .register();
 
