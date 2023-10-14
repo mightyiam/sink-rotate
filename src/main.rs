@@ -1,4 +1,5 @@
-use pipewire::{Context, MainLoop, spa::ReadableDict};
+use futures::SinkExt;
+use pipewire::{metadata::Metadata, spa::ReadableDict, types::ObjectType, Context, MainLoop};
 
 //                if object.type_ != "PipeWire:Interface:Metadata" {
 //                    .metadata_name .as_ref() .unwrap() != "default"
@@ -41,21 +42,53 @@ use pipewire::{Context, MainLoop, spa::ReadableDict};
 //    assert!(status.success());
 //}
 
-fn main() {
-    let mainloop = MainLoop::new().unwrap();
-    let context = Context::new(&mainloop).unwrap();
-    let core = context.connect(None).unwrap();
-    let registry = core.get_registry().unwrap();
+#[tokio::main]
+async fn main() {
+    let (main_sender, main_receiver) = futures::channel::mpsc::unbounded::<()>();
+    let (pw_sender, pw_receiver) = pipewire::channel::channel();
 
-    let something = registry
-        .add_listener_local()
-        .global(|global_object| {
-            dbg!(global_object);
-            // for item in global.props.iter() {
-            //   dbg!(item);
-            // }
-        })
-        .register();
+    let task = tokio::task::spawn(async move {
+        let mainloop = MainLoop::new().unwrap();
 
-    mainloop.run();
+        let _receiver = pw_receiver.attach(&mainloop, {
+            // TODO what is this clone?
+            let mainloop = mainloop.clone();
+            move |_| mainloop.quit()
+        });
+
+        let context = Context::new(&mainloop).unwrap();
+        let core_ = context.connect(None).unwrap();
+        let registry = core_.get_registry().unwrap();
+
+        // keeping the listener alive
+        let _listener = registry
+            .add_listener_local()
+            .global(move |global_object| {
+                let (Some(props), ObjectType::Metadata) =
+                    (&global_object.props, &global_object.type_)
+                else {
+                    return;
+                };
+
+                let Some("default") = props.get("metadata.name") else {
+                    return;
+                };
+
+                //sender_clone.send(global_object.to_owned());
+                pw_sender.send(());
+            })
+            .register();
+
+        core_.sync(0).unwrap();
+        mainloop.run();
+    });
+
+    pw_sender.send(());
+
+    eprintln!("reached");
+
+    // let object = metadata.write().unwrap().take().unwrap();
+    // let metadata: Metadata = registry.bind(&object).unwrap();
+
+    //dbg!(metadata);
 }
