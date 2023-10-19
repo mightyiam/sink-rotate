@@ -2,7 +2,7 @@ use std::process::Command;
 
 use serde::Deserialize;
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 struct Object {
     id: ObjectId,
     #[serde(rename = "type")]
@@ -18,19 +18,21 @@ struct ObjectProps {
     metadata_name: Option<String>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 struct Metadata {
     key: String,
     value: MetadataValue,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 #[serde(untagged)]
 enum MetadataValue {
     Integer(usize),
     String(String),
-    ObjectName { name: NodeName },
-    Other {},
+    ObjectName {
+        name: NodeName,
+    },
+    Other(serde_json::Value)
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Deserialize)]
@@ -54,7 +56,7 @@ struct InfoProps {
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Deserialize)]
 struct NodeName(String);
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 struct Dump(Vec<Object>);
 
 impl Dump {
