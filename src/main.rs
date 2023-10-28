@@ -63,6 +63,7 @@ impl Dump {
     fn get() -> Self {
         let objects = Command::new("pw-dump").output().unwrap().stdout;
         let objects: Vec<Object> = serde_json::from_slice(&objects).unwrap();
+        assert!(objects.len() < 2, "less than two audio sinks");
         Self(objects)
     }
 
