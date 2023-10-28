@@ -1,6 +1,3 @@
-use futures::SinkExt;
-use pipewire::{metadata::Metadata, spa::ReadableDict, types::ObjectType, Context, MainLoop};
-
 //                if object.type_ != "PipeWire:Interface:Metadata" {
 //                    .metadata_name .as_ref() .unwrap() != "default"
 
@@ -42,25 +39,34 @@ use pipewire::{metadata::Metadata, spa::ReadableDict, types::ObjectType, Context
 //    assert!(status.success());
 //}
 
+use std::rc::Rc;
+
+use futures::SinkExt;
+use pipewire::{metadata::Metadata, spa::ReadableDict, types::ObjectType, Context, MainLoop};
+
 #[tokio::main]
 async fn main() {
-    let (main_sender, main_receiver) = futures::channel::mpsc::unbounded::<()>();
-    let (pw_sender, pw_receiver) = pipewire::channel::channel();
+    let (main_sender, _main_receiver) = futures::channel::mpsc::unbounded();
+    let (pw_sender, pw_receiver) = pipewire::channel::channel::<()>();
 
     let task = tokio::task::spawn(async move {
         let mainloop = MainLoop::new().unwrap();
-
-        let _receiver = pw_receiver.attach(&mainloop, {
-            // TODO what is this clone?
-            let mainloop = mainloop.clone();
-            move |_| mainloop.quit()
-        });
-
         let context = Context::new(&mainloop).unwrap();
         let core_ = context.connect(None).unwrap();
         let registry = core_.get_registry().unwrap();
 
-        // keeping the listener alive
+        let _receiver = pw_receiver.attach(&mainloop, {
+            let mainloop = mainloop.clone();
+
+            move |_| {
+                core_.sync(0).unwrap();
+                mainloop.quit()
+            }
+        });
+
+        let registry = Rc::new(registry);
+        let registry_clone = Rc::clone(&registry);
+
         let _listener = registry
             .add_listener_local()
             .global(move |global_object| {
@@ -74,21 +80,23 @@ async fn main() {
                     return;
                 };
 
-                //sender_clone.send(global_object.to_owned());
-                pw_sender.send(());
+                let metadata: Metadata = registry_clone.bind(global_object).unwrap();
+                let _listener = metadata
+                    .add_listener_local()
+                    .property(|subject, key, type_, value| {
+                        dbg!(subject, key, type_, value);
+                        0
+                    })
+                    .register();
+
+                dbg!(metadata);
+
+                futures::executor::block_on(main_sender.clone().send(())).unwrap();
             })
             .register();
 
-        core_.sync(0).unwrap();
         mainloop.run();
     });
 
-    pw_sender.send(());
-
-    eprintln!("reached");
-
-    // let object = metadata.write().unwrap().take().unwrap();
-    // let metadata: Metadata = registry.bind(&object).unwrap();
-
-    //dbg!(metadata);
+    task.await.unwrap();
 }
