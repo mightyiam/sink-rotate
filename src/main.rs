@@ -1,3 +1,6 @@
+#[cfg(test)]
+mod tests;
+
 use std::process::Command;
 
 use serde::Deserialize;
@@ -29,10 +32,8 @@ struct Metadata {
 enum MetadataValue {
     Integer(usize),
     String(String),
-    ObjectName {
-        name: NodeName,
-    },
-    Other(serde_json::Value)
+    ObjectName { name: NodeName },
+    Other(serde_json::Value),
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Deserialize)]
@@ -60,10 +61,8 @@ struct NodeName(String);
 struct Dump(Vec<Object>);
 
 impl Dump {
-    fn get() -> Self {
-        let objects = Command::new("pw-dump").output().unwrap().stdout;
-        let objects: Vec<Object> = serde_json::from_slice(&objects).unwrap();
-        assert!(objects.len() < 2, "less than two audio sinks");
+    fn from_json(dump: &str) -> Self {
+        let objects: Vec<Object> = serde_json::from_str(dump).unwrap();
         Self(objects)
     }
 
@@ -113,36 +112,50 @@ impl Dump {
             .unwrap()
     }
 
-    fn next_audio_sink_id(&self) -> Option<ObjectId> {
-        self.0.iter().cycle().find_map(|object| {
-            if object.type_ != "PipeWire:Interface:Node" {
-                return None;
-            }
+    fn next_audio_sink_id(&self) -> ObjectId {
+        let sinks = self
+            .0
+            .iter()
+            .filter_map(|object| {
+                if object.type_ != "PipeWire:Interface:Node" {
+                    return None;
+                }
 
-            let info = object.info.as_ref().unwrap();
+                let info = object.info.as_ref().unwrap();
 
-            let Some(media_class) = info.props.media_class.as_ref() else {
-                return None;
-            };
+                let Some(media_class) = info.props.media_class.as_ref() else {
+                    return None;
+                };
 
-            if media_class != "Audio/Sink" {
-                return None;
-            }
+                if media_class != "Audio/Sink" {
+                    return None;
+                }
 
-            let node_name = info.props.node_name.as_ref().unwrap();
+                let node_name = info.props.node_name.as_ref().unwrap();
 
-            if node_name == self.default_audio_sink_name() {
-                return None;
-            }
+                Some((object.id, node_name.clone()))
+            })
+            .collect::<Vec<(ObjectId, NodeName)>>();
 
-            Some(object.id)
-        })
+        assert_eq!(sinks.len(), 2, "audio sinks not two");
+
+        sinks
+            .iter()
+            .find_map(|(id, name)| {
+                if name == self.default_audio_sink_name() {
+                    return None;
+                }
+                Some(*id)
+            })
+            .unwrap()
     }
 }
 
 fn main() {
-    let dump = Dump::get();
-    let next_audio_sink_id = dump.next_audio_sink_id().unwrap();
+    let dump = Command::new("pw-dump").output().unwrap().stdout;
+    let dump: String = String::from_utf8(dump).unwrap();
+    let dump = Dump::from_json(&dump);
+    let next_audio_sink_id = dump.next_audio_sink_id();
     let command = &mut Command::new("wpctl");
     command.args(["set-default", &next_audio_sink_id.0.to_string()]);
     let status = command.status().unwrap();
