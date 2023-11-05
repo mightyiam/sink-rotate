@@ -1,9 +1,10 @@
 [package]
 name = "sink-rotate"
-description = "Command that sets \"next\" PipeWire audio sink as default"
+description = "Command that rotates default between two PipeWire audio sinks"
 version = "1.0.3"
 edition = "2021"
 license = "MIT"
+repository = "https://github.com/mightyiam/sink-rotate"
 
 [dependencies]
 serde = { version = "1.0.188", features = ["derive"] }
