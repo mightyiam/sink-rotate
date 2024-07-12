@@ -10,6 +10,7 @@ plugins:
   - - "@semantic-release/exec"
     - verifyConditionsCmd: bump-version --dry-run 999.0.0
       prepareCmd: bump-version ${nextRelease.version}
+      publishCmd: cargo publish
   - - "@semantic-release/git"
     - assets:
         - CHANGELOG.md
