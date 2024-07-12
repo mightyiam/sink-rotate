@@ -1,7 +1,7 @@
 [package]
 name = "sink-rotate"
 description = "Command that rotates the default PipeWire audio sink"
-version = "1.0.4"
+version = "2.0.0"
 edition = "2021"
 license = "MIT"
 repository = "https://github.com/mightyiam/sink-rotate"
