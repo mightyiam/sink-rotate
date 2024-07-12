@@ -22,6 +22,8 @@
       }: {
         nci.projects.sink-rotate.path = ./.;
         nci.crates.sink-rotate = {};
+        nci.toolchainConfig.channel = "stable";
+        nci.toolchainConfig.components = ["rust-analyzer"];
 
         devShells.default = config.nci.outputs.sink-rotate.devShell.overrideAttrs (old: {
           packages = [pkgs.nodejs_latest];
