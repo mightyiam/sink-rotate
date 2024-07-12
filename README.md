@@ -1,8 +1,6 @@
 # sink-rotate
 
-Command that rotates default between two PipeWire audio sinks.
-
-If number of audio sinks not two exits with non-zero.
+Command that rotates the default PipeWire audio sink.
 
 Runtime dependencies:
 

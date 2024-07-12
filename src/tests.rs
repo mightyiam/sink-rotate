@@ -17,9 +17,9 @@ fn b() {
 }
 
 #[test]
-#[should_panic(expected = "audio sinks not two")]
-fn one_sink_available() {
+fn c() {
     const DUMP: &str = include_str!("../fixtures/_48_.json");
     let dump = Dump::from_json(DUMP);
-    dump.next_audio_sink_id();
+    let next = dump.next_audio_sink_id();
+    assert_eq!(next.0, 48);
 }

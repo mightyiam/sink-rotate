@@ -1,6 +1,6 @@
 [package]
 name = "sink-rotate"
-description = "Command that rotates default between two PipeWire audio sinks"
+description = "Command that rotates the default PipeWire audio sink"
 version = "1.0.4"
 edition = "2021"
 license = "MIT"

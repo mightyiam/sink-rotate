@@ -113,7 +113,7 @@ impl Dump {
     }
 
     fn next_audio_sink_id(&self) -> ObjectId {
-        let sinks = self
+        let mut sinks = self
             .0
             .iter()
             .filter_map(|object| {
@@ -135,17 +135,24 @@ impl Dump {
             })
             .collect::<Vec<(ObjectId, NodeName)>>();
 
-        assert_eq!(sinks.len(), 2, "audio sinks not two");
+        sinks.sort();
 
-        sinks
-            .iter()
-            .find_map(|(id, name)| {
-                if name == self.default_audio_sink_name() {
-                    return None;
-                }
-                Some(*id)
-            })
-            .unwrap()
+        if sinks.is_empty() {
+            panic!("zero sinks found");
+        }
+
+        if let [(id, _)] = sinks.as_slice() {
+            return *id;
+        }
+
+        let mut iter = sinks.iter().cycle();
+
+        loop {
+            let (_id, name) = iter.next().unwrap();
+            if name == self.default_audio_sink_name() {
+                return iter.next().unwrap().0;
+            }
+        }
     }
 }
 
