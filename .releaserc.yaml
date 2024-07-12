@@ -8,9 +8,9 @@ plugins:
   - "@semantic-release/changelog"
   - "@semantic-release/github"
   - - "@semantic-release/exec"
-    - verifyConditionsCmd: bump-version --dry-run 999.0.0 && cargo publish --dry-run
+    - verifyConditionsCmd: bump-version --dry-run 999.0.0 && cargo publish --locked --dry-run
       prepareCmd: bump-version ${nextRelease.version}
-      publishCmd: cargo publish
+      publishCmd: cargo publish --locked
   - - "@semantic-release/git"
     - assets:
         - CHANGELOG.md
