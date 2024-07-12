@@ -43,7 +43,10 @@
         treefmt.programs.alejandra.enable = true;
         treefmt.programs.rustfmt.enable = true;
         treefmt.programs.prettier.enable = true;
-        treefmt.settings.global.excludes = ["fixtures/*"];
+        treefmt.settings.global.excludes = [
+          "fixtures/*"
+          "CHANGELOG.md"
+        ];
 
         checks.build = self'.packages.default;
       };
