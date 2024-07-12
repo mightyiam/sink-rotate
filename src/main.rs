@@ -123,9 +123,7 @@ impl Dump {
 
                 let info = object.info.as_ref().unwrap();
 
-                let Some(media_class) = info.props.media_class.as_ref() else {
-                    return None;
-                };
+                let media_class = info.props.media_class.as_ref()?;
 
                 if media_class != "Audio/Sink" {
                     return None;
