@@ -18,6 +18,7 @@
       perSystem = {
         config,
         pkgs,
+        self',
         ...
       }: {
         nci.projects.sink-rotate.path = ./.;
@@ -36,6 +37,8 @@
         treefmt.programs.rustfmt.enable = true;
         treefmt.programs.prettier.enable = true;
         treefmt.settings.global.excludes = ["fixtures/*"];
+
+        checks.build = self'.packages.default;
       };
     };
 }
