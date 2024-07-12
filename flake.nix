@@ -22,7 +22,14 @@
         ...
       }: {
         nci.projects.sink-rotate.path = ./.;
-        nci.crates.sink-rotate = {};
+
+        nci.crates.sink-rotate.drvConfig.mkDerivation.buildInputs = [pkgs.makeWrapper];
+        nci.crates.sink-rotate.drvConfig.mkDerivation.postFixup = ''
+          wrapProgram $out/bin/sink-rotate \
+            --prefix PATH : ${pkgs.pipewire}/bin/pw-dump \
+            --prefix PATH : ${pkgs.wireplumber}/bin/wpctl
+        '';
+
         nci.toolchainConfig.channel = "stable";
         nci.toolchainConfig.components = ["rust-analyzer"];
 
