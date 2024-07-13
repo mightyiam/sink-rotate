@@ -1,3 +1,9 @@
+## [2.2.0](https://github.com/mightyiam/sink-rotate/compare/v2.1.0...v2.2.0) (2024-07-13)
+
+### Features
+
+* dedupe some flake inputs ([941e4f9](https://github.com/mightyiam/sink-rotate/commit/941e4f9b0cda2a8fa6ca2e805e5415f8327b2238))
+
 ## [2.1.0](https://github.com/mightyiam/sink-rotate/compare/v2.0.0...v2.1.0) (2024-07-12)
 
 ### Features
