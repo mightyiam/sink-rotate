@@ -2,6 +2,8 @@
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
   inputs.nci.url = "github:yusdacra/nix-cargo-integration";
   inputs.nci.inputs.nixpkgs.follows = "nixpkgs";
+  inputs.nci.inputs.parts.follows = "flake-parts";
+  inputs.nci.inputs.treefmt.follows = "treefmt-nix";
   inputs.flake-parts.url = "github:hercules-ci/flake-parts";
   inputs.flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
   inputs.treefmt-nix.url = "github:numtide/treefmt-nix";
