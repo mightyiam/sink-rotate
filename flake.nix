@@ -24,53 +24,17 @@
     flake-parts.lib.mkFlake {inherit inputs;} {
       systems = import inputs.systems;
       imports = [
-        inputs.nci.flakeModule
-        inputs.treefmt-nix.flakeModule
+        ./fmt.nix
+        ./nci.nix
         ./release
+        ./shell.nix
       ];
       perSystem = {
         config,
-        pkgs,
         self',
         ...
       }: {
-        nci = {
-          projects.sink-rotate.path = ./.;
-
-          crates.sink-rotate.drvConfig.mkDerivation = {
-            buildInputs = [pkgs.makeWrapper];
-            postFixup = ''
-              wrapProgram $out/bin/sink-rotate \
-                --prefix PATH : ${pkgs.pipewire}/bin/pw-dump \
-                --prefix PATH : ${pkgs.wireplumber}/bin/wpctl
-            '';
-          };
-
-          toolchainConfig = {
-            channel = "stable";
-            components = ["rust-analyzer"];
-          };
-        };
-
-        devShells.default = config.nci.outputs.sink-rotate.devShell.overrideAttrs (old: {
-          packages = [pkgs.nodejs_latest];
-        });
-
         packages.default = config.nci.outputs.sink-rotate.packages.release;
-
-        treefmt = {
-          projectRootFile = "flake.nix";
-          programs = {
-            alejandra.enable = true;
-            rustfmt.enable = true;
-            prettier.enable = true;
-          };
-          settings.global.excludes = [
-            "fixtures/*"
-            "CHANGELOG.md"
-          ];
-        };
-
         checks.build = self'.packages.default;
       };
     };
