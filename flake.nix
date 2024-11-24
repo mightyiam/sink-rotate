@@ -20,8 +20,9 @@
     };
   };
 
-  outputs = inputs @ {flake-parts, ...}:
-    flake-parts.lib.mkFlake {inherit inputs;} {
+  outputs =
+    inputs@{ flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
       systems = import inputs.systems;
       imports = [
         ./fmt.nix
@@ -29,13 +30,15 @@
         ./release
         ./shell.nix
       ];
-      perSystem = {
-        config,
-        self',
-        ...
-      }: {
-        packages.default = config.nci.outputs.sink-rotate.packages.release;
-        checks.build = self'.packages.default;
-      };
+      perSystem =
+        {
+          config,
+          self',
+          ...
+        }:
+        {
+          packages.default = config.nci.outputs.sink-rotate.packages.release;
+          checks.build = self'.packages.default;
+        };
     };
 }
