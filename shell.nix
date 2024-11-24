@@ -1,13 +1,5 @@
+{ inputs, ... }:
 {
-  perSystem =
-    {
-      pkgs,
-      config,
-      ...
-    }:
-    {
-      devShells.default = config.nci.outputs.sink-rotate.devShell.overrideAttrs (old: {
-        packages = [ pkgs.nodejs_latest ];
-      });
-    };
+  imports = [ inputs.devshell.flakeModule ];
+  perSystem.nci.projects.sink-rotate.numtideDevshell = "default";
 }

@@ -27,6 +27,7 @@
       };
     in
     {
+      devshells.default.devshell.packagesFrom = [ semantic-release ];
       apps = {
         bump-version.program = bump-version;
         semantic-release.program = semantic-release-with-plugins;
