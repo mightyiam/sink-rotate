@@ -1,13 +1,23 @@
 {
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-  inputs.nci.url = "github:yusdacra/nix-cargo-integration";
-  inputs.nci.inputs.nixpkgs.follows = "nixpkgs";
-  inputs.nci.inputs.parts.follows = "flake-parts";
-  inputs.nci.inputs.treefmt.follows = "treefmt-nix";
-  inputs.flake-parts.url = "github:hercules-ci/flake-parts";
-  inputs.flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
-  inputs.treefmt-nix.url = "github:numtide/treefmt-nix";
-  inputs.treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nci = {
+      url = "github:yusdacra/nix-cargo-integration";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        parts.follows = "flake-parts";
+        treefmt.follows = "treefmt-nix";
+      };
+    };
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
 
   outputs = inputs @ {flake-parts, ...}:
     flake-parts.lib.mkFlake {inherit inputs;} {
@@ -23,17 +33,23 @@
         self',
         ...
       }: {
-        nci.projects.sink-rotate.path = ./.;
+        nci = {
+          projects.sink-rotate.path = ./.;
 
-        nci.crates.sink-rotate.drvConfig.mkDerivation.buildInputs = [pkgs.makeWrapper];
-        nci.crates.sink-rotate.drvConfig.mkDerivation.postFixup = ''
-          wrapProgram $out/bin/sink-rotate \
-            --prefix PATH : ${pkgs.pipewire}/bin/pw-dump \
-            --prefix PATH : ${pkgs.wireplumber}/bin/wpctl
-        '';
+          crates.sink-rotate.drvConfig.mkDerivation = {
+            buildInputs = [pkgs.makeWrapper];
+            postFixup = ''
+              wrapProgram $out/bin/sink-rotate \
+                --prefix PATH : ${pkgs.pipewire}/bin/pw-dump \
+                --prefix PATH : ${pkgs.wireplumber}/bin/wpctl
+            '';
+          };
 
-        nci.toolchainConfig.channel = "stable";
-        nci.toolchainConfig.components = ["rust-analyzer"];
+          toolchainConfig = {
+            channel = "stable";
+            components = ["rust-analyzer"];
+          };
+        };
 
         devShells.default = config.nci.outputs.sink-rotate.devShell.overrideAttrs (old: {
           packages = [pkgs.nodejs_latest];
@@ -41,14 +57,18 @@
 
         packages.default = config.nci.outputs.sink-rotate.packages.release;
 
-        treefmt.projectRootFile = "flake.nix";
-        treefmt.programs.alejandra.enable = true;
-        treefmt.programs.rustfmt.enable = true;
-        treefmt.programs.prettier.enable = true;
-        treefmt.settings.global.excludes = [
-          "fixtures/*"
-          "CHANGELOG.md"
-        ];
+        treefmt = {
+          projectRootFile = "flake.nix";
+          programs = {
+            alejandra.enable = true;
+            rustfmt.enable = true;
+            prettier.enable = true;
+          };
+          settings.global.excludes = [
+            "fixtures/*"
+            "CHANGELOG.md"
+          ];
+        };
 
         checks.build = self'.packages.default;
       };

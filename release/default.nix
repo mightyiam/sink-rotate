@@ -24,7 +24,9 @@
       '';
     };
   in {
-    apps.bump-version.program = bump-version;
-    apps.semantic-release.program = semantic-release-with-plugins;
+    apps = {
+      bump-version.program = bump-version;
+      semantic-release.program = semantic-release-with-plugins;
+    };
   };
 }
