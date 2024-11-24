@@ -8,7 +8,10 @@
       alejandra.enable = true;
       prettier.enable = true;
       rustfmt.enable = true;
-      toml-sort.enable = true;
+      toml-sort = {
+        enable = true;
+        all = true;
+      };
     };
     settings.global.excludes = [
       "fixtures/*"
