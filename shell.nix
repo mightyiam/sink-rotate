@@ -1,5 +1,13 @@
 { inputs, ... }:
 {
   imports = [ inputs.devshell.flakeModule ];
-  perSystem.nci.projects.sink-rotate.numtideDevshell = "default";
+
+  perSystem =
+    { pkgs, config, ... }:
+    {
+      devshells.default.devshell = {
+        packages = [ pkgs.gcc ];
+        packagesFrom = [ config.packages.default ];
+      };
+    };
 }
