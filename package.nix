@@ -30,6 +30,8 @@
             --prefix PATH : ${lib.getExe' pkgs.pipewire "pw-dump"} \
             --prefix PATH : ${lib.getExe' pkgs.wireplumber "wpctl"}
         '';
+
+        meta.mainProgram = "sink-rotate";
       };
 
       checks.build = config.packages.default;
