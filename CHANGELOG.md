@@ -1,3 +1,9 @@
+## [2.3.0](https://github.com/mightyiam/sink-rotate/compare/v2.2.0...v2.3.0) (2025-05-22)
+
+### Features
+
+* **flake:** meta.mainProgram ([5beefe1](https://github.com/mightyiam/sink-rotate/commit/5beefe108b9032898ddf0e6393467a7f4f6be86d))
+
 ## [2.2.0](https://github.com/mightyiam/sink-rotate/compare/v2.1.0...v2.2.0) (2024-07-13)
 
 ### Features
