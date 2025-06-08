@@ -5,10 +5,10 @@
   },
   "version": "1.0.0",
   "dependencies": {
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/exec": "^6.0.3",
-    "@semantic-release/git": "^10.0.1",
-    "conventional-changelog-conventionalcommits": "^8.0.0",
-    "semantic-release": "^24.0.0"
+    "@semantic-release/changelog": "*",
+    "@semantic-release/exec": "*",
+    "@semantic-release/git": "*",
+    "conventional-changelog-conventionalcommits": "*",
+    "semantic-release": "*"
   }
 }

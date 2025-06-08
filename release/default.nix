@@ -6,7 +6,7 @@
         pname = "semantic-release-with-plugins";
         version = "1.0.0";
         src = ./semantic-release-with-plugins;
-        npmDepsHash = "sha256-vUyCPiAoBCennFJJJwOa5jvNBV6ADOR/iewtQw4wfic=";
+        npmDepsHash = "sha256-h8nLyA/antqQYeab8JXLfSIPiXfL7ibbN5JKJKL66lE=";
         dontNpmBuild = true;
       };
 
