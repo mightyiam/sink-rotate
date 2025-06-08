@@ -1,13 +1,13 @@
 { inputs, ... }:
 {
-  imports = [ inputs.devshell.flakeModule ];
+  imports = [ inputs.make-shell.flakeModule ];
 
   perSystem =
     { pkgs, config, ... }:
     {
-      devshells.default.devshell = {
+      make-shells.default = {
         packages = [ pkgs.gcc ];
-        packagesFrom = [ config.packages.default ];
+        inputsFrom = [ config.packages.default ];
       };
     };
 }

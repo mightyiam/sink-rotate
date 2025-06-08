@@ -27,7 +27,7 @@
       };
     in
     {
-      devshells.default.devshell.packagesFrom = [ semantic-release ];
+      make-shells.default.inputsFrom = [ semantic-release ];
       apps = {
         bump-version.program = bump-version;
         semantic-release.program = semantic-release-with-plugins;
