@@ -23,6 +23,8 @@
 
         cargoLock.lockFile = ./Cargo.lock;
 
+        env.RUSTFLAGS = "--deny warnings";
+
         nativeBuildInputs = [ pkgs.makeWrapper ];
 
         postFixup = ''
