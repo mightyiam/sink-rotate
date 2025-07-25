@@ -16,6 +16,7 @@
         npmDeps = pkgs.importNpmLock {
           npmRoot = ./semantic-release-with-plugins;
         };
+        npmConfigHook = pkgs.importNpmLock.npmConfigHook;
         dontNpmBuild = true;
       };
 
