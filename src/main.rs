@@ -67,8 +67,7 @@ impl Dump {
     }
 
     fn defaults(&self) -> &Vec<Metadata> {
-        let defaults = self
-            .0
+        self.0
             .iter()
             .find_map(|object| {
                 if object.type_ != "PipeWire:Interface:Metadata" {
@@ -89,8 +88,7 @@ impl Dump {
 
                 Some(object.metadata.as_ref().unwrap())
             })
-            .unwrap();
-        defaults
+            .unwrap()
     }
 
     fn default_audio_sink_name(&self) -> &NodeName {

@@ -26,6 +26,11 @@
         env.RUSTFLAGS = "--deny warnings";
 
         nativeBuildInputs = [ pkgs.makeWrapper ];
+        nativeCheckInputs = [ pkgs.clippy ];
+
+        preCheck = ''
+          cargo clippy --all-targets --all-features
+        '';
 
         postFixup = ''
           wrapProgram $out/bin/sink-rotate \
