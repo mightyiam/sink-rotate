@@ -4,7 +4,7 @@ serde_json = "1.0.107"
 
 [package]
 description = "Command that rotates the default PipeWire audio sink"
-edition = "2021"
+edition = "2024"
 license = "MIT"
 name = "sink-rotate"
 repository = "https://github.com/mightyiam/sink-rotate"
