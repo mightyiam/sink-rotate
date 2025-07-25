@@ -6,7 +6,13 @@
       semantic-release = pkgs.buildNpmPackage {
         pname = "semantic-release-with-plugins";
         version = "1.0.0";
-        src = ./semantic-release-with-plugins;
+        src = lib.fileset.toSource {
+          root = ./semantic-release-with-plugins;
+          fileset = lib.fileset.unions [
+            ./semantic-release-with-plugins/package.json
+            ./semantic-release-with-plugins/package-lock.json
+          ];
+        };
         npmDeps = pkgs.importNpmLock {
           npmRoot = ./semantic-release-with-plugins;
         };
