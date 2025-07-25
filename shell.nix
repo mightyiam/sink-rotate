@@ -1,6 +1,6 @@
 { inputs, ... }:
 {
-  imports = [ inputs.make-shell.flakeModule ];
+  imports = [ inputs.make-shell.flakeModules.default ];
 
   perSystem =
     { pkgs, config, ... }:
