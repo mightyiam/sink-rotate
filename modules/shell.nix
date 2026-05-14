@@ -15,7 +15,7 @@
           pkgs.gcc
           pkgs.rust-analyzer
         ];
-        inputsFrom = [ config.packages.default ];
+        inputsFrom = [ config.checks.build ];
       };
     };
 }
