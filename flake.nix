@@ -19,10 +19,10 @@
     inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
-        ./fmt.nix
-        ./package.nix
-        ./shell.nix
-        ./systems.nix
+        ./modules/fmt.nix
+        ./modules/package.nix
+        ./modules/shell.nix
+        ./modules/systems.nix
       ];
     };
 }

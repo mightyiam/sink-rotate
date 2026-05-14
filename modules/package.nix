@@ -9,19 +9,19 @@
     {
       packages.default = pkgs.rustPlatform.buildRustPackage {
         pname = "sink-rotate";
-        version = (lib.importTOML ./Cargo.toml).package.version;
+        version = (lib.importTOML ../Cargo.toml).package.version;
 
         src = lib.fileset.toSource {
-          root = ./.;
+          root = ../.;
           fileset = lib.fileset.unions [
-            ./Cargo.lock
-            ./Cargo.toml
-            ./fixtures
-            ./src
+            ../Cargo.lock
+            ../Cargo.toml
+            ../fixtures
+            ../src
           ];
         };
 
-        cargoLock.lockFile = ./Cargo.lock;
+        cargoLock.lockFile = ../Cargo.lock;
 
         env.RUSTFLAGS = "--deny warnings";
 
