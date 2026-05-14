@@ -21,7 +21,6 @@
       imports = [
         ./fmt.nix
         ./package.nix
-        ./release
         ./shell.nix
         ./systems.nix
       ];

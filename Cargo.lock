@@ -72,7 +72,7 @@ dependencies = [
 
 [[package]]
 name = "sink-rotate"
-version = "2.3.0"
+version = "2.3.0-git"
 dependencies = [
  "serde",
  "serde_json",
