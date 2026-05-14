@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "files": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1778677964,
+        "narHash": "sha256-5CBChRuRALkalrd3bOTZnOETDp0bS1VvYIVnLI7VHgc=",
+        "owner": "mightyiam",
+        "repo": "files",
+        "rev": "79173d7b566bd504c9cb8db409991335765e6700",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mightyiam",
+        "repo": "files",
+        "type": "github"
+      }
+    },
     "flake-file": {
       "locked": {
         "lastModified": 1777679829,
@@ -80,6 +96,7 @@
     },
     "root": {
       "inputs": {
+        "files": "files",
         "flake-file": "flake-file",
         "flake-parts": "flake-parts",
         "import-tree": "import-tree",
