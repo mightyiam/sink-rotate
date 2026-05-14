@@ -1,7 +1,12 @@
 { inputs, ... }:
 {
+  flake-file.inputs.treefmt-nix = {
+    url = "github:numtide/treefmt-nix";
+    flake = false;
+  };
+
   imports = [
-    inputs.treefmt-nix.flakeModule
+    (inputs.treefmt-nix + "/flake-module.nix")
   ];
   perSystem.treefmt = {
     projectRootFile = "flake.nix";
@@ -14,9 +19,12 @@
         all = true;
       };
     };
-    settings.global.excludes = [
-      "fixtures/*"
-      "CHANGELOG.md"
-    ];
+    settings.global = {
+      on-unmatched = "fatal";
+      excludes = [
+        "fixtures/*"
+        "CHANGELOG.md"
+      ];
+    };
   };
 }

@@ -1,26 +1,27 @@
+# DO-NOT-EDIT. This file was auto-generated using github:vic/flake-file.
+# Use `nix run .#write-flake` to regenerate it.
 {
+  outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
+
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    make-shell.url = "github:nicknovitski/make-shell";
+    files = {
+      url = "github:mightyiam/files";
+      flake = false;
+    };
+    flake-file.url = "github:vic/flake-file";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
+    import-tree.url = "github:vic/import-tree";
+    make-shell = {
+      url = "github:nicknovitski/make-shell";
+      flake = false;
+    };
+    nixpkgs.url = "https://channels.nixos.org/nixpkgs-unstable/nixexprs.tar.xz";
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
+      flake = false;
     };
   };
-
-  outputs =
-    inputs@{ flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = [
-        ./fmt.nix
-        ./package.nix
-        ./release
-        ./shell.nix
-        ./systems.nix
-      ];
-    };
 }

@@ -6,3 +6,5 @@ If not using via Nix, these runtime dependencies must be in the `PATH`:
 
 - `pw-dump` from PipeWire
 - `wpctl` from WirePlumber
+
+Intended to be used from the default branch.
