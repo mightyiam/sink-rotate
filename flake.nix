@@ -1,7 +1,10 @@
 {
   inputs = {
     nixpkgs.url = "https://channels.nixos.org/nixpkgs-unstable/nixexprs.tar.xz";
-    make-shell.url = "github:nicknovitski/make-shell";
+    make-shell = {
+      url = "github:nicknovitski/make-shell";
+      flake = false;
+    };
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
