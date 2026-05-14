@@ -1,5 +1,20 @@
 {
   "nodes": {
+    "flake-file": {
+      "locked": {
+        "lastModified": 1777679829,
+        "narHash": "sha256-zQxY90pq7BDbeimAiOfuK2U0huzo6oHOiC8zEpRgsbQ=",
+        "owner": "vic",
+        "repo": "flake-file",
+        "rev": "04ca28cf570276e70a9a5f694791ab2a60f1f300",
+        "type": "github"
+      },
+      "original": {
+        "owner": "vic",
+        "repo": "flake-file",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
@@ -17,6 +32,21 @@
       "original": {
         "owner": "hercules-ci",
         "repo": "flake-parts",
+        "type": "github"
+      }
+    },
+    "import-tree": {
+      "locked": {
+        "lastModified": 1778745889,
+        "narHash": "sha256-Mku0H76qQLnHjBk+bYCOJZSGQBg1j3uBSTn78rSi+II=",
+        "owner": "vic",
+        "repo": "import-tree",
+        "rev": "12cfccd348d61bc74c0e40fd34b49c2a7eca17f8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "vic",
+        "repo": "import-tree",
         "type": "github"
       }
     },
@@ -50,7 +80,9 @@
     },
     "root": {
       "inputs": {
+        "flake-file": "flake-file",
         "flake-parts": "flake-parts",
+        "import-tree": "import-tree",
         "make-shell": "make-shell",
         "nixpkgs": "nixpkgs",
         "treefmt-nix": "treefmt-nix"

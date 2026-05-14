@@ -1,5 +1,10 @@
 { inputs, ... }:
 {
+  flake-file.inputs.treefmt-nix = {
+    url = "github:numtide/treefmt-nix";
+    flake = false;
+  };
+
   imports = [
     (inputs.treefmt-nix + "/flake-module.nix")
   ];
