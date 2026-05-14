@@ -19,9 +19,12 @@
         all = true;
       };
     };
-    settings.global.excludes = [
-      "fixtures/*"
-      "CHANGELOG.md"
-    ];
+    settings.global = {
+      on-unmatched = "fatal";
+      excludes = [
+        "fixtures/*"
+        "CHANGELOG.md"
+      ];
+    };
   };
 }
